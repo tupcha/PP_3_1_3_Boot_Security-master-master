@@ -31,11 +31,13 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
     @Override
+    @Transactional
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -43,6 +45,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public void deletedById(Long id) {
         userRepository.deleteById(id);
     }
