@@ -26,21 +26,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin()
+                .loginPage("/login").successHandler(successUserHandler)
+                .loginProcessingUrl("/loginAction")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .permitAll();
+
+
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/user-create/**").hasRole("ADMIN")
-                .antMatchers("/user-update/**").hasRole("ADMIN")
-                .antMatchers("/delete").hasRole("ADMIN")
-                .and()
-                .formLogin().successHandler(successUserHandler)
+                .anyRequest().authenticated()
                 .and()
                 .logout()
                 .permitAll();
 
     }
+
 
     @Bean
     public static PasswordEncoder passwordEncoder() {

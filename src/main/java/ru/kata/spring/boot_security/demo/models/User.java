@@ -7,37 +7,48 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
 @Table(name = "users")
-
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "username")
-    private String nameOnSite;
+    private String username;
     @Column(name = "password")
     private String password;
     @Column(name = "name")
     private String name;
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "lastname" )
+    private String lastname;
     @Column(name = "age")
     private byte age;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
-    joinColumns = {@JoinColumn(name = "user_id")},
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> userRoles;
 
+    public User() {
+    }
+
+    public User(String username, String password, String name, String lastName, byte age) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.lastname = lastName;
+        this.age = age;
+    }
+
+    public User(String username, String password, String name, String lastName, byte age, Set<Role> userRoles) {
+        this(username, password, name, lastName, age);
+        this.userRoles = userRoles;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,8 +56,68 @@ public class User implements UserDetails {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public byte getAge() {
+        return age;
+    }
+
+    public void setAge(byte age) {
+        this.age = age;
+    }
+
+    public Set<Role> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<Role> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    @Override
     public String getUsername() {
-        return getNameOnSite();
+        return username;
+    }
+
+    public void setOneRole(Role role) {
+        if (userRoles == null) {
+            userRoles = new HashSet<>();
+        }
+        userRoles.add(role);
     }
 
     @Override
@@ -81,4 +152,5 @@ public class User implements UserDetails {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }
