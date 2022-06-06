@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Transactional
 public class RoleServiceImp implements RoleService {
 
     private final RoleRepository roleRepository;
